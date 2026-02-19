@@ -20,6 +20,44 @@ set(PROJECT_SOURCES
 
 )
 
+set(INCLUDE_FILES
+    codeeditor/QHighlightRule.hpp
+    codeeditor/QHighlightBlockRule.hpp
+    codeeditor/QCodeEditor.hpp
+    codeeditor/QCXXHighlighter.hpp
+    codeeditor/QLineNumberArea.hpp
+    codeeditor/QStyleSyntaxHighlighter.hpp
+    codeeditor/QSyntaxStyle.hpp
+    codeeditor/QGLSLCompleter.hpp
+    codeeditor/QGLSLHighlighter.hpp
+    codeeditor/QLanguage.hpp
+    codeeditor/QXMLHighlighter.hpp
+    codeeditor/QJSONHighlighter.hpp
+    codeeditor/QLuaCompleter.hpp
+    codeeditor/QLuaHighlighter.hpp
+    codeeditor/QPythonCompleter.hpp
+    codeeditor/QPythonHighlighter.hpp
+    codeeditor/QFramedTextAttribute.hpp
+)
+
+set(SOURCE_FILES
+    codeeditor/QCodeEditor.cpp
+    codeeditor/QLineNumberArea.cpp
+    codeeditor/QCXXHighlighter.cpp
+    codeeditor/QSyntaxStyle.cpp
+    codeeditor/QStyleSyntaxHighlighter.cpp
+    codeeditor/QGLSLCompleter.cpp
+    codeeditor/QGLSLHighlighter.cpp
+    codeeditor/QLanguage.cpp
+    codeeditor/QXMLHighlighter.cpp
+    codeeditor/QJSONHighlighter.cpp
+    codeeditor/QLuaCompleter.cpp
+    codeeditor/QLuaHighlighter.cpp
+    codeeditor/QPythonCompleter.cpp
+    codeeditor/QPythonHighlighter.cpp
+    codeeditor/QFramedTextAttribute.cpp
+)
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(untitled1
         MANUAL_FINALIZATION
@@ -32,6 +70,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resources.qrc
         style.qss
         style.qss
+        iconprovider.h iconprovider.cpp
     )
     target_include_directories(untitled1 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Define target properties for Android with Qt 6 as:

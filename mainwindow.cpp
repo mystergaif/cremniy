@@ -3,6 +3,7 @@
 #include "filetreeview.h"
 #include "filecreatedialog.h"
 #include "./ui_mainwindow.h"
+#include "iconprovider.h"
 
 #include "QFileSystemModel"
 
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
 
     QFile file(":/style.qss");
@@ -32,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     QFileSystemModel *model = new QFileSystemModel(this);
 
     // путь, который нужно показать
-    QString path = "/home/igmunv/projects/test";
+    QString path = "/home/igmunv/proj/test";
 
     model->setRootPath(path);
 
@@ -41,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ограничиваем отображение только этой директории
     ui->treeView->setRootIndex(model->index(path));
+    // model->setIconProvider(new IconProvider());
 
     ui->treeView->setColumnHidden(1, true);
     ui->treeView->setColumnHidden(2, true);
@@ -48,13 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->treeView->header()->hide();
     ui->treeView->setAnimated(true);
 
-    ui->tabWidget->setStyleSheet(R"(
-    QTabBar::tab {
-        min-width: 100px;
-    }
-    )");
-
     ui->horizontalLayout_2->setContentsMargins(0,0,0,0);
+    ui->horizontalLayout->setContentsMargins(0,0,0,0);
 
     while (ui->tabWidget->count() > 0) {
         ui->tabWidget->removeTab(0);
@@ -76,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->treeView, &QTreeView::customContextMenuRequested,
             this, &MainWindow::onTreeContextMenu);
 
+
 }
 
 MainWindow::~MainWindow()
@@ -92,6 +91,7 @@ void MainWindow::on_treeView_doubleClicked(const QModelIndex &index)
     QWidget *emptyWidget = new QWidget();
     FileTab *filetabWidget = new FileTab(emptyWidget);
     QVBoxLayout *vlayout = new QVBoxLayout(emptyWidget);
+    filetabWidget->setObjectName("filetab");
     vlayout->addWidget(filetabWidget);
     vlayout->setContentsMargins(0,0,0,0);
     emptyWidget->setLayout(vlayout);
@@ -113,8 +113,6 @@ void MainWindow::onTreeContextMenu(const QPoint &pos)
         return;
 
     QMenu menu(this);
-
-
 
     if (index.isValid()){
 

@@ -1,17 +1,17 @@
 /* Общий стиль */
 QWidget {
-    background-color: #0b0e14;
-    color: #d0d0d0;
+    background-color: #262626;
+    color: #ffffff;
     font-family: "JetBrains Mono", "Consolas", monospace;
     font-size: 12px;
 }
 
 /* Кнопки */
 QPushButton {
-    background-color: #111722;
-    border: 1px solid #1f2a44;
+    background-color: #262626;
+    border: 1px solid #1f1f1f;
     padding: 6px 12px;
-    color: #9fd3ff;
+    color: #ffffff;
 }
 
 QPushButton:hover {
@@ -26,31 +26,93 @@ QPushButton:pressed {
 
 /* Поля ввода */
 QLineEdit, QTextEdit, QPlainTextEdit {
-    background-color: #05070b;
-    border: 1px solid #1f2a44;
+    background-color: #1f1f1f;
+    border: 1px solid #262626;
     color: #00ffaa;
     selection-background-color: #004466;
 }
 
 /* Списки */
 QListView, QTreeView, QTableView {
-    background-color: #05070b;
-    border: 1px solid #1f2a44;
+    background-color: #1f1f1f;
+    border: 1px solid #262626;
     alternate-background-color: #0a0f18;
 }
 
 /* Tabs */
 QTabWidget::pane {
-    border: 1px solid #1f2a44;
+    border: 1px solid #262626;
 }
 
 QTabBar::tab {
-    background: #111722;
-    border: 1px solid #1f2a44;
+    background: #262626;
+    border: 1px solid #1f1f1f;
     padding: 5px;
+    height: 10px;
+    min-width: 200px;
 }
 
 QTabBar::tab:selected {
-    background: #05070b;
-    border-bottom: 2px solid #00ffaa;
+    background: #1f1f1f;
+    background: qlineargradient(
+        x1:0, y1:1, x2:0, y2:0,
+        stop:0 #1f1f1f,
+        stop:0.92 #1f1f1f,
+        stop:0.93 #0000ff,
+        stop:1 #0000ff
+    );
 }
+
+#filetab QTabBar::tab {
+    background: #262626;
+    border: 1px solid #1f1f1f;
+    padding: 5px;
+    height: 20px;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+#filetab QTabBar::tab:selected {
+    background: #1f1f1f;
+    background: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #1f1f1f,
+        stop:0.92 #1f1f1f,
+        stop:0.93 #0000ff,
+        stop:1 #0000ff
+    );
+}
+
+QTreeView::item:selected {
+    background-color: #444444;
+    color: white;
+}
+
+/* Hover только для НЕвыделенных элементов */
+QTreeView::item:hover:!selected {
+    background-color: #333333;
+}
+
+/* Hover для пунктов меню верхней панели */
+QMenuBar::item {
+    background: transparent;   /* чтобы не перекрывать фон */
+    color: white;
+}
+
+QMenuBar::item:selected {      /* выделение при клике или навигации клавишами */
+    background-color: #444444;
+}
+
+QMenuBar::item:hover {         /* hover мышкой */
+    background-color: #333333;
+}
+
+QMenu {
+    border: 1px solid #000000;
+}
+
+QMenu::item:selected {
+    background: #333333;
+}
+
+
