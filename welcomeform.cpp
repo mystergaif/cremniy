@@ -159,10 +159,7 @@ void WelcomeForm::OpenProjectHandler()
     dlg.setDirectory(QDir::homePath());
 
     if (dlg.exec() == QDialog::Accepted) {
-        QString filePath = dlg.selectedFiles().first();
-        QFileInfo info(filePath);
-        QString dirPath = info.absolutePath();
-        OpenProject(dirPath);
+        OpenProject(dlg.selectedFiles().first());
     }
 }
 
