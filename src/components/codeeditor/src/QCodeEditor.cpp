@@ -1,4 +1,5 @@
 // QCodeEditor
+#include "QCECompleter.hpp"
 #include <QLineNumberArea.hpp>
 #include <QSyntaxStyle.hpp>
 #include <QCodeEditor.hpp>
@@ -28,7 +29,7 @@ static QVector<QPair<QString, QString>> parentheses = {
     {"'", "'"}
 };
 
-QCodeEditor::QCodeEditor(QWidget* widget) :
+QCodeEditor::QCodeEditor(QString ext, QWidget* widget) :
     QPlainTextEdit(widget),
     m_highlighter(nullptr),
     m_syntaxStyle(nullptr),
@@ -40,11 +41,26 @@ QCodeEditor::QCodeEditor(QWidget* widget) :
     m_replaceTab(true),
     m_tabReplace(QString(4, ' '))
 {
+    initLanguages();
     initDocumentLayoutHandlers();
     initFont();
     performConnections();
 
-    setSyntaxStyle(QSyntaxStyle::defaultStyle());
+    this->setSyntaxStyle(m_styles["default"]);
+    this->setCompleter  (m_completers[ext]);
+    this->setHighlighter(m_highlighters[ext]);
+}
+
+void QCodeEditor::initLanguages(){
+    m_completers["c"] = new QCECompleter(":/languages/python.xml");
+    m_completers["cpp"] = new QCECompleter(":/languages/python.xml");
+    m_completers["asm"] = new QCECompleter(":/languages/python.xml");
+
+    m_highlighters["c"] = new QCXXHighlighter;
+    m_highlighters["cpp"] = new QCXXHighlighter;
+    m_highlighters["asm"] = new QCXXHighlighter;
+
+    m_styles["default"] = QSyntaxStyle::defaultStyle();
 }
 
 void QCodeEditor::initDocumentLayoutHandlers()
@@ -61,24 +77,23 @@ void QCodeEditor::initFont()
 {
     auto fnt = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     fnt.setFixedPitch(true);
-    fnt.setPointSize(10);
+    fnt.setPointSize(12);
 
     setFont(fnt);
 }
 
 void QCodeEditor::performConnections()
 {
+    connect(this,
+            &QPlainTextEdit::updateRequest,
+            this,
+            &QCodeEditor::updateLineNumberArea);
+
     connect(
         document(),
         &QTextDocument::blockCountChanged,
         this,
         &QCodeEditor::updateLineNumberAreaWidth
-    );
-
-    connect(
-        verticalScrollBar(),
-        &QScrollBar::valueChanged,
-        [this](int){ m_lineNumberArea->update(); }
     );
 
     connect(
@@ -217,20 +232,22 @@ void QCodeEditor::updateLineNumberAreaWidth(int)
     setViewportMargins(m_lineNumberArea->sizeHint().width(), 0, 0, 0);
 }
 
-void QCodeEditor::updateLineNumberArea(const QRect& rect)
+void QCodeEditor::updateLineNumberArea(const QRect& rect, int dy)
 {
-    m_lineNumberArea->update(
-        0,
-        rect.y(),
-        m_lineNumberArea->sizeHint().width(),
-        rect.height()
-    );
-    updateLineGeometry();
+    if (dy)
+    {
+        m_lineNumberArea->scroll(0, dy);
+    }
+    else
+    {
+        m_lineNumberArea->update(0,
+                                 rect.y(),
+                                 m_lineNumberArea->width(),
+                                 rect.height());
+    }
 
     if (rect.contains(viewport()->rect()))
-    {
         updateLineNumberAreaWidth(0);
-    }
 }
 
 void QCodeEditor::handleSelectionQuery(QTextCursor cursor)
@@ -354,7 +371,7 @@ void QCodeEditor::highlightCurrentLine(QList<QTextEdit::ExtraSelection>& extraSe
 
 void QCodeEditor::paintEvent(QPaintEvent* e)
 {
-    updateLineNumberArea(e->rect());
+    // updateLineNumberArea(e->rect());
     QPlainTextEdit::paintEvent(e);
 }
 

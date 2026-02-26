@@ -1,7 +1,5 @@
 #include "filestabwidget.h"
-#include "QCodeEditor.hpp"
 #include "filetab.h"
-#include "tooltabwidget.h"
 #include <qboxlayout.h>
 
 FilesTabWidget::FilesTabWidget(QWidget *parent) {
@@ -34,16 +32,9 @@ void FilesTabWidget::openFile(QString filePath, QString tabTitle){
 
     // else file is not opened
     FileTab *filetab = new FileTab(this, filePath);
-    QVBoxLayout *vlayout = new QVBoxLayout(filetab);
-    ToolTabWidget *tooltabWidget = new ToolTabWidget(filetab, filePath);
-    tooltabWidget->setObjectName("toolTabWidget");
-    vlayout->addWidget(tooltabWidget);
-    vlayout->setContentsMargins(0,0,0,0);
-    filetab->setLayout(vlayout);
     int new_tab_index = this->addTab(filetab, tabTitle);
     this->setCurrentIndex(new_tab_index);
-    connect(tooltabWidget->get_codeEditor()->document(), &QTextDocument::modificationChanged,
-            filetab, &FileTab::fileModifyEvent);
+    filetab->openFile();
 }
 
 

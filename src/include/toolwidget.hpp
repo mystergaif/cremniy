@@ -1,20 +1,13 @@
-#ifndef TOOLTAB_H
-#define TOOLTAB_H
+#ifndef TOOLWIDGET_H
+#define TOOLWIDGET_H
 
-#include <QWidget>
-
+#include <qstringview.h>
 class ToolWidget
 {
-    Q_OBJECT
 public:
-    explicit ToolWidget(QString path, QWidget* tw);
-
-    void setDataFromFile(QString path);
-    void saveDataToFile(QString path);
-
     virtual void setBData(const QByteArray& data) = 0;
     virtual QByteArray getBData() = 0;
 
 };
 
-#endif // TOOLTAB_H
+#endif // TOOLWIDGET_H

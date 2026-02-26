@@ -1,8 +1,9 @@
 #ifndef TOOLTABWIDGET_H
 #define TOOLTABWIDGET_H
 
-#include "filetab.h"
-#include "utils/syncfiledata.h"
+#include "codeeditortab.h"
+#include "disassemblertab.h"
+#include "hexviewtab.h"
 #include <QTabWidget>
 
 class QVBoxLayout;
@@ -18,20 +19,20 @@ class ToolTabWidget : public QTabWidget
 {
     Q_OBJECT
 public:
-    ToolTabWidget(FileTab *fwparent, QString path);
-
-    QCodeEditor* get_codeEditor();
-    SyncFileData* m_syncfiledata;
+    ToolTabWidget(QWidget *parent, QString path);
+    void saveToFileCurrentTab(QString path);
+    void setDataInTabs(QByteArray &data);
 
 private:
-
     void loadStyle(QString path, QString name);
 
-    QCodeEditor* m_codeEditor;
+    CodeEditorTab* m_codeEditorTab;
+    HexViewTab* m_hexViewTab;
+    DisassemblerTab* m_disassemblerTab;
 
-    QMap<QString, QCompleter*> m_completers;
-    QMap<QString, QStyleSyntaxHighlighter*> m_highlighters;
-    QMap<QString, QSyntaxStyle*> m_styles;
+public slots:
+    void onTabModified(bool modified);
+
 };
 
 #endif // TOOLTABWIDGET_H

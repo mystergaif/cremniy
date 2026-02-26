@@ -2,21 +2,23 @@
 #define FILETAB_H
 
 #include "filestabwidget.h"
+#include "tooltabwidget.h"
 #include <QWidget>
 
 class FileTab : public QWidget
 {
     Q_OBJECT
+
+private:
+    ToolTabWidget *m_tooltabWidget;
+    FilesTabWidget* m_filesTabWidget;
+
 public:
+    explicit FileTab(FilesTabWidget *ftparent, QString path, QWidget* parrent = nullptr);
     QString filePath;
-    FilesTabWidget* parrentTabWidget;
-    explicit FileTab(FilesTabWidget *fwparent, QString path);
     void saveFile();
+    void openFile();
 
-
-
-public slots:
-    void fileModifyEvent(bool modified);
 };
 
 #endif // FILETAB_H

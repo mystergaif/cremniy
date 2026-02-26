@@ -1,8 +1,4 @@
 #include "tooltabwidget.h"
-#include "QHexView/model/buffer/qmemorybuffer.h"
-#include "QHexView/qhexview.h"
-#include "filetab.h"
-#include "tooltab.h"
 #include <QCodeEditor.hpp>
 #include <QFile>
 #include <QSyntaxStyle.hpp>
@@ -15,42 +11,13 @@
 #include <qboxlayout.h>
 #include <qfileinfo.h>
 
-ToolTabWidget::ToolTabWidget(FileTab *fwparent, QString path) :
-    m_codeEditor(nullptr),
-    m_completers(),
-    m_highlighters(),
-    m_styles()
+ToolTabWidget::ToolTabWidget(QWidget *parent, QString path)
     {
 
-
-    m_completers["c"] = new QCECompleter(":/languages/python.xml");
-    m_completers["cpp"] = new QCECompleter(":/languages/python.xml");
-    m_completers["asm"] = new QCECompleter(":/languages/python.xml");
-
-    m_highlighters["c"] = new QCXXHighlighter;
-    m_highlighters["cpp"] = new QCXXHighlighter;
-    m_highlighters["asm"] = new QCXXHighlighter;
-
-    m_styles["default"] = QSyntaxStyle::defaultStyle();
-
-
-    // Code Editor
-    QCodeEditor* codeEditorWidget = new QCodeEditor(this);
-    codeEditorWidget->setSyntaxStyle(m_styles["default"]);
-    QFileInfo fileInfo(path);
-    QString ext = fileInfo.suffix();
-    codeEditorWidget->setCompleter  (m_completers[ext]);
-    codeEditorWidget->setHighlighter(m_highlighters[ext]);
-
-    // Hex View
-    QHexView* hexViewWidget = new QHexView();
-    QHexDocument* document = QHexDocument::fromMemory<QMemoryBuffer>(data, nullptr);
-    hexViewWidget->setDocument(document);
-
     // Tabs
-    ToolWidget* codeEditorTab = new ToolWidget(this, path, codeEditorWidget);
-    ToolWidget* hexViewTab = new ToolWidget(this, path, hexViewWidget);
-    ToolWidget* DisassemblerTab = new ToolWidget(this, path, new QWidget(this));
+    m_codeEditorTab = new CodeEditorTab(this, path);
+    m_hexViewTab = new HexViewTab(this, path);
+    m_disassemblerTab = new DisassemblerTab(this, path);
 
     // Tab Icons
     QIcon codeIcon(":/icons/code.png");
@@ -58,32 +25,59 @@ ToolTabWidget::ToolTabWidget(FileTab *fwparent, QString path) :
     QIcon disasmIcon(":/icons/dasm.png");
 
     // Add Tabs
-    this->addTab(codeEditorTab, codeIcon, "Code");
-    this->addTab(hexViewTab, hexIcon, "Hex");
-    this->addTab(DisassemblerTab, disasmIcon, "Disassembler");
+    this->addTab(m_codeEditorTab, codeIcon, "Code");
+    this->addTab(m_hexViewTab, hexIcon, "Hex");
+    this->addTab(m_disassemblerTab, disasmIcon, "Disassembler");
+
+    connect(m_codeEditorTab, &CodeEditorTab::modifyData,
+            this, &ToolTabWidget::onTabModified);
+    connect(m_hexViewTab, &HexViewTab::modifyData,
+            this, &ToolTabWidget::onTabModified);
+    connect(m_disassemblerTab, &DisassemblerTab::modifyData,
+            this, &ToolTabWidget::onTabModified);
 
 }
 
-QCodeEditor* ToolTabWidget::get_codeEditor(){
-    return m_codeEditor;
-}
-
-void ToolTabWidget::loadStyle(QString path, QString name)
+void ToolTabWidget::onTabModified(bool modified)
 {
-    QFile fl(path);
+    QObject* obj = sender();
+    QWidget* widget = qobject_cast<QWidget*>(obj);
 
-    if (!fl.open(QIODevice::ReadOnly))
-    {
-        return;
+    if (!widget) return;
+
+    int index = indexOf(widget);
+    if (index < 0) return;
+
+    QString text = tabText(index);
+    if (!text.endsWith("*")){
+        qDebug() << "if";
+        setTabText(index, text + "*");
     }
 
-    auto style = new QSyntaxStyle(this);
+}
 
-    if (!style->load(fl.readAll()))
-    {
-        delete style;
-        return;
+void ToolTabWidget::saveToFileCurrentTab(QString path){
+    QWidget* w = currentWidget();
+    int index = currentIndex();
+    if (!w) return;
+
+    ToolTab* tab = dynamic_cast<ToolTab*>(w);
+    if (!tab) return;
+
+    tab->saveToFile(path);
+    QString text = tabText(index);
+    text.replace("*", "");
+    setTabText(index, text);
+}
+
+void ToolTabWidget::setDataInTabs(QByteArray &data){
+    for (int i = 0; i < count(); ++i) {
+        QWidget* w = widget(i);
+        if (!w) return;
+
+        ToolTab* tab = dynamic_cast<ToolTab*>(w);
+        if (!tab) return;
+
+        tab->setTabData(data);
     }
-
-    m_styles[name] = style;
 }

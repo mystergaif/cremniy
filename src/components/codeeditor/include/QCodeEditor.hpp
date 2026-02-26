@@ -1,9 +1,10 @@
 #pragma once
 
 // Qt
+#include "QStyleSyntaxHighlighter.hpp"
 #include <QTextEdit> // Required for inheritance
 #include <qplaintextedit.h>
-#include <tooltab.hpp>
+#include <toolwidget.hpp>
 
 class QCompleter;
 class QLineNumberArea;
@@ -17,24 +18,47 @@ class QFramedTextAttribute;
 class QCodeEditor : public QPlainTextEdit, public ToolWidget
 {
     Q_OBJECT
+    friend class QLineNumberArea;
 
 public:
     /**
      * @brief Constructor.
      * @param widget Pointer to parent widget.
      */
-    explicit QCodeEditor(QWidget* widget=nullptr);
+    explicit QCodeEditor(QString ext, QWidget* widget=nullptr);
 
     // Disable copying
     QCodeEditor(const QCodeEditor&) = delete;
     QCodeEditor& operator=(const QCodeEditor&) = delete;
-
+    bool m_ignoreModification = false;
 
     void setBData(const QByteArray& data) override {
+        m_ignoreModification = true;
+
         setPlainText(QString::fromUtf8(data));
+        document()->setModified(false);
+
+        m_ignoreModification = false;
     }
     QByteArray getBData() override {
         return this->toPlainText().toUtf8();
+    }
+    double scaleFactor = 1.0;
+    void wheelEvent(QWheelEvent* e) override
+    {
+        if (e->modifiers() & Qt::ControlModifier)
+        {
+            double delta = e->angleDelta().y() > 0 ? 1.1 : 1/1.1;
+            scaleFactor *= delta;
+            QFont f = font();
+            f.setPointSizeF(12 * scaleFactor);
+            setFont(f);
+
+            e->accept();
+            return;
+        }
+
+        QPlainTextEdit::wheelEvent(e);
     }
 
 
@@ -139,7 +163,7 @@ public Q_SLOTS:
      * part of line number area.
      * @param rect Area that has to be updated.
      */
-    void updateLineNumberArea(const QRect& rect);
+    void updateLineNumberArea(const QRect& rect, int dy);
 
     /**
      * @brief Slot, that will proceed extra selection
@@ -202,6 +226,13 @@ protected:
 
 
 private:
+
+
+    QMap<QString, QCompleter*> m_completers;
+    QMap<QString, QStyleSyntaxHighlighter*> m_highlighters;
+    QMap<QString, QSyntaxStyle*> m_styles;
+
+    void initLanguages();
 
     /**
      * @brief Method for initializing document
@@ -274,11 +305,10 @@ private:
      */
     int getIndentationSpaces();
 
-    QStyleSyntaxHighlighter* m_highlighter;
     QSyntaxStyle* m_syntaxStyle;
     QLineNumberArea* m_lineNumberArea;
     QCompleter* m_completer;
-
+    QStyleSyntaxHighlighter* m_highlighter;
     QFramedTextAttribute* m_framedAttribute;
 
     bool m_autoIndentation;

@@ -52,6 +52,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         resources/cremniy_res.qrc
         utils/syncfiledata.h utils/syncfiledata.cpp
+        widgets/codeeditortab.h widgets/codeeditortab.cpp
+        widgets/hexviewtab.h widgets/hexviewtab.cpp
+        widgets/disassemblertab.h widgets/disassemblertab.cpp
+
+        include/toolwidget.hpp
+        include/tooltab.h
+        include/tooltab.cpp
     )
     target_include_directories(untitled1 PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}

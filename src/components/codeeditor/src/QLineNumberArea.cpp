@@ -57,16 +57,19 @@ void QLineNumberArea::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
 
-    // Clearing rect to update
     painter.fillRect(
         event->rect(),
         m_syntaxStyle->getFormat("Text").background().color()
-    );
+        );
 
-    auto blockNumber = m_codeEditParent->getFirstVisibleBlock();
-    auto block       = m_codeEditParent->document()->findBlockByNumber(blockNumber);
-    auto top         = (int) m_codeEditParent->document()->documentLayout()->blockBoundingRect(block).translated(0, -m_codeEditParent->verticalScrollBar()->value()).top();
-    auto bottom      = top + (int) m_codeEditParent->document()->documentLayout()->blockBoundingRect(block).height();
+    QTextBlock block = m_codeEditParent->firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+
+    int top = m_codeEditParent->blockBoundingGeometry(block)
+                  .translated(m_codeEditParent->contentOffset())
+                  .top();
+
+    int bottom = top + m_codeEditParent->blockBoundingRect(block).height();
 
     auto currentLine = m_syntaxStyle->getFormat("CurrentLineNumber").foreground().color();
     auto otherLines  = m_syntaxStyle->getFormat("LineNumber").foreground().color();
@@ -79,22 +82,24 @@ void QLineNumberArea::paintEvent(QPaintEvent* event)
         {
             QString number = QString::number(blockNumber + 1);
 
-            auto isCurrentLine = m_codeEditParent->textCursor().blockNumber() == blockNumber;
+            bool isCurrentLine =
+                m_codeEditParent->textCursor().blockNumber() == blockNumber;
+
             painter.setPen(isCurrentLine ? currentLine : otherLines);
 
             painter.drawText(
-                -5,
+                0,
                 top,
-                sizeHint().width(),
+                width() - 4,
                 m_codeEditParent->fontMetrics().height(),
                 Qt::AlignRight,
                 number
-            );
+                );
         }
 
         block = block.next();
         top = bottom;
-        bottom = top + (int) m_codeEditParent->document()->documentLayout()->blockBoundingRect(block).height();
+        bottom = top + m_codeEditParent->blockBoundingRect(block).height();
         ++blockNumber;
     }
 }

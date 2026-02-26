@@ -1,29 +1,30 @@
 #include "filetab.h"
 #include "tooltabwidget.h"
+#include <qboxlayout.h>
 #include <qdir.h>
 #include <qevent.h>
 
-FileTab::FileTab(FilesTabWidget *fwparent, QString path)
-    : QWidget{fwparent}
+FileTab::FileTab(FilesTabWidget *ftparent, QString path, QWidget* parent)
+    : QWidget(parent),
+    m_filesTabWidget(ftparent),
+    filePath(path)
 {
-    filePath = path;
-    parrentTabWidget = fwparent;
+    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    m_tooltabWidget = new ToolTabWidget(this, path);
+    m_tooltabWidget->setObjectName("toolTabWidget");
+    vlayout->addWidget(m_tooltabWidget);
+    vlayout->setContentsMargins(0,0,0,0);
+    this->setLayout(vlayout);
 }
 
+void FileTab::openFile(){
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) return;
+    QByteArray data = file.readAll();
+    file.close();
+    m_tooltabWidget->setDataInTabs(data);
+}
 
 void FileTab::saveFile(){
-    ToolTabWidget* tooltabInner = this->findChild<ToolTabWidget*>("toolTabWidget");
-    if (!tooltabInner) return;
-    QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return;
-    tooltabInner->m_syncfiledata->syncBuffer();
-    QByteArray* data = tooltabInner->m_syncfiledata->getBuffer();
-    file.write(*data);
-    file.close();
-    parrentTabWidget->setTabText(parrentTabWidget->currentIndex(), QFileInfo(filePath).fileName());
-}
-
-void FileTab::fileModifyEvent(bool modified){
-    ToolTabWidget* tooltabInner = this->findChild<ToolTabWidget*>("toolTabWidget");
-    parrentTabWidget->setTabText(parrentTabWidget->currentIndex(), QFileInfo(filePath).fileName()+"*");
+    m_tooltabWidget->saveToFileCurrentTab(filePath);
 }

@@ -9,7 +9,7 @@
 #include <QHexView/model/qhexdocument.h>
 #include <QList>
 #include <QRectF>
-#include <tooltab.hpp>
+#include <toolwidget.hpp>
 
 #if defined(QHEXVIEW_ENABLE_DIALOGS)
 class HexFindDialog;
@@ -121,7 +121,7 @@ public:
         m_hexdocument->setData(data);
     }
     QByteArray getBData() override {
-        m_hexdocument->read(0, m_hexdocument->length());
+        return m_hexdocument->read(0, m_hexdocument->length());
     }
 
 public Q_SLOTS:
