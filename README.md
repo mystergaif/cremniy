@@ -32,6 +32,32 @@ English • [Русский](README_ru.md)
 
 ---
 
+## Screenshots
+
+<div align="center">
+
+**Main Menu**
+<img src="screenshots/main_menu.png" alt="Main Menu" width="800">
+
+<br><br>
+
+**Code Editor**
+<img src="screenshots/code.png" alt="Code Editor" width="800">
+
+<br><br>
+
+**Disassembler**
+<img src="screenshots/desassembler.png" alt="Disassembler" width="800">
+
+<br><br>
+
+**HEX Editor**
+<img src="screenshots/hex.png" alt="HEX Editor" width="800">
+
+</div>
+
+---
+
 ## Features
 
 ### Available now
