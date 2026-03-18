@@ -1,81 +1,119 @@
 <div align="center">
-  <img src="src/resources/icons/icon.png" width="250" alt="logo">
-  <br>
-  <h3>Cremniy</h3>
-  <h6>A development environment for low-level programming that combines all low-level tools into a single application</h6>
+
+<img src="src/resources/icons/icon.png" width="250" alt="Cremniy logo">
+
+<br>
+<h3>Cremniy</h3>
+<h6>A development environment for low-level programming that combines all low-level tools into a single application</h6>
 
 [![License](https://img.shields.io/github/license/igmunv/cremniy?color=orange&style=flat-square)](LICENSE)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 [![Community](https://img.shields.io/badge/Community-Telegram-blue?logo=telegram&style=flat-square)](https://t.me/cremniy_com)
+<br>
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/17)
+[![Qt 6](https://img.shields.io/badge/Qt-6.x-41CD52?style=flat-square&logo=qt)](https://www.qt.io/)
 
 English • [Русский](README_ru.md)
 
 </div>
 
-<br>
+---
 
-## 📌 About the Project
+## What is Cremniy?
 
-**Cremniy** — a development environment for low-level programming.
+**Cremniy** is an integrated environment for low-level development. Instead of juggling a hex editor here, a disassembler there, and a code editor somewhere else — you get them all in one consistent, focused application.
 
-It combines tools for working with binary files, memory, and system code in a single application.
+**Built for:**
 
-### The project is focused on
+- 🛠 System software developers
+- 🔍 Reverse engineers
+- 🔐 Information security specialists
+- 📡 Embedded systems developers
 
-- system software developers
-- reverse engineers
-- information security specialists
-- embedded systems developers
+---
 
-## ✨ Features
+## Screenshots
 
-### Current
+<div align="center">
 
-- Code editor
-- HEX editor
-- Disassembler
+**Main Menu**
+<img src="screenshots/main_menu.png" alt="Main Menu" width="800">
 
-### Planned
+<br><br>
 
-- Debugger
-- Memory visualization
+**Code Editor**
+<img src="screenshots/code.png" alt="Code Editor" width="800">
 
-## 📦 Dependencies
+<br><br>
 
-| Dependency | Min. version |
-| ---------- | ------------ |
-| **CMake**  | 3.16         |
-| **Qt**     | 6.x          |
-| **C++**    | 17           |
+**Disassembler**
+<img src="screenshots/desassembler.png" alt="Disassembler" width="800">
 
-### Installing Dependencies
+<br><br>
+
+**HEX Editor**
+<img src="screenshots/hex.png" alt="HEX Editor" width="800">
+
+</div>
+
+---
+
+## Features
+
+### Available now
+
+| Feature | Description |
+|---|---|
+| 📝 Code editor | Write and edit low-level code with syntax support |
+| 🔢 HEX editor | Inspect and modify binary data at the byte level |
+| 🔧 Disassembler | Decode machine instructions into readable assembly |
+
+### Coming soon
+
+- 🐛 **Debugger** — step through execution, inspect registers and memory
+- 🧠 **Memory visualization** — visual maps of memory layout and allocation
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+| Dependency | Minimum version |
+|---|---|
+| **CMake** | 3.16 |
+| **Qt** | 6.x |
+| **C++ compiler** | C++17 support |
 
 <details>
-<summary><b>Windows</b></summary>
+<summary><b>🪟 Windows</b></summary>
 
-1. Install [Qt 6](https://www.qt.io/download-qt-installer-oss) — during installation, select the **Qt Widgets** component.
-2. Install [CMake](https://cmake.org/download/) (≥ 3.16) or use the one bundled with Qt.
-3. A compiler supporting C++17: [Visual Studio 2019+](https://visualstudio.microsoft.com/) (MSVC) or [MinGW](https://www.mingw-w64.org/).
+1. Install [Qt 6](https://www.qt.io/download-qt-installer-oss) — select the **Qt Widgets** component during setup.
+2. Install [CMake](https://cmake.org/download/) (≥ 3.16), or use the version bundled with Qt.
+3. Install a C++17-compatible compiler:
+   - [Visual Studio 2019+](https://visualstudio.microsoft.com/) (MSVC) — select the **"Desktop development with C++"** workload.
+   - Or [MinGW-w64](https://www.mingw-w64.org/).
 
 > [!TIP]
-> When using Visual Studio, ensure that the "Desktop development with C++" workload is installed.
+> If using Visual Studio, make sure the **"Desktop development with C++"** workload is checked during installation.
 
 </details>
 
 <details>
-<summary><b>Linux (Ubuntu / Debian)</b></summary>
+<summary><b>🐧 Linux (Ubuntu / Debian)</b></summary>
 
 ```bash
 sudo apt update
 sudo apt install cmake g++ qt6-base-dev
 ```
 
-If the `qt6-base-dev` package is not available in your distribution, use the [official Qt installer](https://www.qt.io/download-qt-installer-oss).
+> [!NOTE]
+> If `qt6-base-dev` is unavailable in your distribution's repositories, use the [official Qt installer](https://www.qt.io/download-qt-installer-oss) instead.
 
 </details>
 
 <details>
-<summary><b>macOS</b></summary>
+<summary><b>🍎 macOS</b></summary>
 
 Using [Homebrew](https://brew.sh/):
 
@@ -85,31 +123,42 @@ brew install cmake qt@6
 
 </details>
 
-## 🛠️ Build
+---
 
-### From Command Line
+## Building
+
+### Clone and build
 
 ```bash
 git clone https://github.com/igmunv/cremniy.git
 cd cremniy
 
-mkdir build
-cd build
+mkdir build && cd build
 cmake ../src
-
 cmake --build .
 ```
 
-To build in Release mode:
+### Release build
 
 ```bash
 cmake ../src -DCMAKE_BUILD_TYPE=Release
 cmake --build . --config Release
 ```
 
-## 🤝 Contributing
+---
 
-Contributions are **welcome**.
+## Contributing
 
-All contributors will be added to [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md)
-and mentioned at the end of each video on the [YouTube channel](https://www.youtube.com/@igmunv).
+Contributions are **welcome and encouraged**.
+
+Whether it's a bug fix, a new feature, or an improvement to documentation — feel free to open an issue or submit a pull request.
+
+All contributors are credited in [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md) and mentioned in videos on the [YouTube channel](https://www.youtube.com/@igmunv).
+
+For guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## License
+
+Distributed under the terms described in [LICENSE](LICENSE).
